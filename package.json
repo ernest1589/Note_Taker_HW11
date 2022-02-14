@@ -2,18 +2,26 @@
   "name": "note_taker_hw11",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server/server.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ernest1589/Note_Taker_HW11.git"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ernest1589/Note_Taker_HW11/issues"
   },
-  "homepage": "https://github.com/ernest1589/Note_Taker_HW11#readme"
+  "homepage": "https://github.com/ernest1589/Note_Taker_HW11#readme",
+  "devDependencies": {
+    "jest": "^27.4.7"
+  },
+  "dependencies": {
+    "express": "^4.17.2"
+  }
 }
