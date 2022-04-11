@@ -1,65 +1,48 @@
-const express = require('express');
-const PORT = process.env.PORT || 3001;
+const fs = require("fs");
+const express = require("express");
+const path = require("path");
+
 const app = express();
-const fs = require('fs');
-const noteid = () => {
-    Math.floor((1 + Math.random()) * 0*100000)
-    .toString(10)
-    .substring(1);
-}
+const PORT = process.env.PORT || 3001;
 
-
-
-
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({  extended: true  }));
-app.use(express.statis('public'));
 
-
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public')));
-
-app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
-
-app.post('/api/notes', (req, res) => {
-    const { title, text } = req.body;
-
-    if (title && text) {
-        const newNote = { title, text,
-            note_id: noteid()
-        }
-    }
-
-    fs.readFile('./db/notes.js', (err, data) => {
-        if(err) {
-            console.error(err);
-       } else {
-           const jsonData = JSON.parse(data);
-           jsonData.push(newNote);
-
-           fs.writeFile('./db/notes.json', JSON.stringify(jsonData, null, 4), (writeErr) => {
-               if (writeErr) {
-                   console.error(writErr);
-              } else {
-                  console.log(`${title} note was saved`);
-              }
-              });
-       }
-    });
+app.get("/notes", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
-app.get('/api/notes', (req, res) => {
-
-    fs.readFile('/db/notes.json', (err, data) => {
-        if(err) {
-            console.error(err);
-        } else {
-            return res.send(data);
-        }
-    });
+app.get("/api/notes", (req, res) => {
+  res.sendFile(path.join(__dirname, "/db/db.json"));
 });
 
-
-app.listen(PORT, () => {
-    console.log(`Application ir running on http://localhost:${PORT}`)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
+app.post("/api/notes", (req, res) => {
+  let newNote = req.body;
+  let noteList = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+  let notelength = noteList.length.toString();
+
+  newNote.id = notelength;
+  noteList.push(newNote);
+
+  fs.writeFileSync("./db/db.json", JSON.stringify(noteList));
+  res.json(noteList);
+});
+
+app.delete("/api/notes/:id", (req, res) => {
+  let noteList = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+  let noteId = req.params.id.toString();
+
+  noteList = noteList.filter((selected) => {
+    return selected.id != noteId;
+  });
+
+  fs.writeFileSync("./db/db.json", JSON.stringify(noteList));
+  res.json(noteList);
+});
+
+app.listen(PORT, () => console.log("Server listening on port " + PORT));
