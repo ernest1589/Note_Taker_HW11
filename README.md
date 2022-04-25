@@ -12,10 +12,8 @@ The process for you to install it is whe you download the app you just need to r
 
 Here are some screenshots of how the application would be seen
 
-    ```md
     ![alt text](/public/pictures/screenshot1.png)
     ![alt text](/public/pictures/screenshot2.png)
-    ```
 
 ## How to Contribute
 
